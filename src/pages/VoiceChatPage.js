@@ -13,8 +13,17 @@ function VoiceChatPage() {
 
     setMessages((prev) => [...prev, userMessage, botMessage]);
 
-    const utterance = new SpeechSynthesisUtterance(botMessage.text);
-    window.speechSynthesis.speak(utterance);
+    if ("speechSynthesis" in window) {
+      // Stop any ongoing speech so it doesn't overlap
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(botMessage.text);
+      utterance.lang = "en-US"; // set language
+      utterance.rate = 1; // normal speed
+      utterance.pitch = 1; // normal pitch
+
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleVoiceInput = () => {
@@ -26,7 +35,7 @@ function VoiceChatPage() {
       return;
     }
 
-    if (isListening) {
+    if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);
       return;
@@ -55,10 +64,7 @@ function VoiceChatPage() {
       style={{
         height: "100vh",
         width: "100vw",
-        backgroundImage: 'url("/blue-background.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        backgroundColor: "#71C0BB",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -83,18 +89,18 @@ function VoiceChatPage() {
         Home
       </button>
 
-      {/* Chat Box with voice button inside (centered) */}
+      {/* Chat Box */}
       <div
         className="hide-scrollbar position-relative"
         style={{
           width: "100%",
           maxWidth: "900px",
           height: "90vh",
-          backgroundColor: "transperant",
-          backdropFilter: "blur(0px)",
+          backgroundColor: "rgba(255, 255, 255, 0.6)",
+          backdropFilter: "blur(6px)",
           borderRadius: "30px",
           padding: "25px",
-          boxShadow: "0 0 0px rgba(0,0,0,0.3)",
+          boxShadow: "0 0 12px rgba(0,0,0,0.2)",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -133,47 +139,48 @@ function VoiceChatPage() {
             </div>
           ))}
         </div>
-
-        {/* Voice Button Centered Over Chat Box */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 5,
-          }}
-        >
-          <div
-            onClick={handleVoiceInput}
-            style={{
-              width: "140px",
-              height: "140px",
-              backgroundColor: isListening ? "#B33030" : "#0A2647",
-              color: "#fff",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "2.5rem",
-              cursor: "pointer",
-              boxShadow: "0 0 25px rgba(0,0,0,0.5)",
-              transition: "all 0.3s ease",
-              animation: isListening ? "pulse 2s infinite" : "none",
-            }}
-          >
-            <i className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}></i>
-          </div>
-        </div>
       </div>
 
+      {/* Voice Button - Bottom Center */}
+      <div
+        onClick={handleVoiceInput}
+        title={isListening ? "Listening..." : "Tap to speak"}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "52px",
+          height: "52px",
+          background: isListening
+            ? "rgba(255, 76, 76, 0.25)"
+            : "rgba(255, 255, 255, 0.2)",
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          borderRadius: "12px",
+          color: isListening ? "#FF4C4C" : "#0A2647",
+          fontSize: "1.3rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow:
+            "0 2px 6px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3)",
+          cursor: "pointer",
+          zIndex: 9999,
+          transition: "all 0.3s ease",
+        }}
+      >
+        <i className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}></i>
+      </div>
+
+      {/* Optional: Hide scrollbar style */}
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 
         @keyframes pulse {
           0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.1); opacity: 0.7; }
+          50% { transform: scale(1.1); opacity: 0.75; }
           100% { transform: scale(1); opacity: 1; }
         }
       `}</style>

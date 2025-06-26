@@ -12,6 +12,16 @@ function ChatPage() {
     const userMessage = { sender: "user", text };
     const botMessage = { sender: "bot", text: `You said: ${text}` };
     setMessages((prev) => [...prev, userMessage, botMessage]);
+
+    // Voice output for bot message
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel(); // stop any current speech
+      const utterance = new SpeechSynthesisUtterance(botMessage.text);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   useEffect(() => {
@@ -25,12 +35,14 @@ function ChatPage() {
       className="d-flex flex-column"
       style={{
         height: "100vh",
-        overflow: "hidden",
-        backgroundImage: 'url("/blue-background.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
+        width: "100vw",
+        backgroundColor: "#71C0BB",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+        boxSizing: "border-box",
+        position: "relative",
       }}
     >
       <div
@@ -58,7 +70,6 @@ function ChatPage() {
           className="flex-grow-1 overflow-auto px-2 py-3 hide-scrollbar"
           style={{
             borderRadius: "10px",
-            backgroundColor: "",
           }}
         >
           <style>{`
@@ -71,9 +82,9 @@ function ChatPage() {
           ))}
         </div>
 
-        {/* Input Bar Fixed at Bottom */}
+        {/* Input Bar Fixed at Bottom with Voice Enabled */}
         <div className="pt-3">
-          <ChatInput onSend={handleSend} enableVoice={false} />
+          <ChatInput onSend={handleSend} enableVoice={true} />
         </div>
       </div>
     </div>

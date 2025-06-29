@@ -110,7 +110,6 @@ function ChatInput({ onSend, enableVoice = false }) {
               flexGrow: 1,
               border: "none",
               outline: "none",
-              boxShadow: "none",
               background: "transparent",
               padding: "10px",
               fontSize: "1.1rem",
@@ -133,7 +132,7 @@ function ChatInput({ onSend, enableVoice = false }) {
             <button
               onClick={handleVoiceInput}
               style={{
-                backgroundColor: isListening ? "#0A2647" : "#0A2647",
+                backgroundColor: "#0A2647",
                 borderRadius: "30px",
                 padding: "8px 16px",
                 transition: "background-color 0.3s ease",
@@ -165,18 +164,21 @@ function ChatInput({ onSend, enableVoice = false }) {
           )}
         </div>
 
-        {/* Send button outside input area */}
+        {/* Send button outside input area with icon only */}
         <button
           className="btn text-white border-0 shadow send-btn"
           style={{
             backgroundColor: "#0A2647",
             borderRadius: "30px",
             padding: "8px 20px",
-            fontSize: "1rem",
+            fontSize: "1.2rem",
             cursor: "pointer",
             transition: "background-color 0.3s ease",
-            minWidth: "60px",
+            minWidth: "44px",
             height: "44px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={handleSend}
           onMouseOver={(e) =>
@@ -187,7 +189,7 @@ function ChatInput({ onSend, enableVoice = false }) {
           }
           aria-label="Send message"
         >
-          Send
+          <i className="bi bi-send-fill"></i>
         </button>
       </div>
     </>

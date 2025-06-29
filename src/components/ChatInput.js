@@ -62,14 +62,14 @@ function ChatInput({ onSend, enableVoice = false }) {
       <input
         ref={inputRef}
         type="text"
-        className="form-control"
         style={{
           flexGrow: 1,
           border: "none",
           outline: "none",
-          fontSize: "1rem",
+          boxShadow: "none",
           background: "transparent",
           padding: "10px",
+          fontSize: "1rem",
         }}
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -85,23 +85,28 @@ function ChatInput({ onSend, enableVoice = false }) {
       {enableVoice && (
         <button
           onClick={handleVoiceInput}
-          className="btn text-white border-0 shadow d-flex align-items-center justify-content-center"
           style={{
-            backgroundColor: isListening ? "#c82333" : "#0A2647",
+            backgroundColor: isListening ? "#0A2647" : "#0A2647",
             borderRadius: "30px",
             padding: "8px 20px",
             transition: "background-color 0.3s ease",
             cursor: "pointer",
+            animation: isListening
+              ? "glowPulse 2s infinite ease-in-out"
+              : "none",
+            border: "none",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: isListening ? "0 0 8px rgba(10, 38, 71, 0.7)" : "none",
           }}
           title={isListening ? "Stop Listening" : "Start Voice Input"}
         >
           <i
             className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}
-            style={{
-              fontSize: "1.2rem",
-              lineHeight: 1,
-            }}
-          ></i>
+            style={{ fontSize: "1.2rem", lineHeight: 1 }}
+          />
         </button>
       )}
 

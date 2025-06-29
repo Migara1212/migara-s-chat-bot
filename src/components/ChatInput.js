@@ -4,11 +4,13 @@ function ChatInput({ onSend, enableVoice = false }) {
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
+  const inputRef = useRef(null);
 
   const handleSend = () => {
     if (input.trim()) {
       onSend(input.trim());
       setInput("");
+      if (inputRef.current) inputRef.current.blur(); // close keyboard on mobile
     }
   };
 
@@ -41,80 +43,84 @@ function ChatInput({ onSend, enableVoice = false }) {
   };
 
   return (
-    <div className="d-flex justify-content-center px-2">
-      <div
-        className="d-flex flex-column flex-sm-row flex-grow-1 align-items-center gap-2 px-3 py-2 shadow rounded-pill"
+    <div
+      className="chat-input-container"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: "10px 15px",
+        background: "#fff",
+        borderRadius: "30px",
+        boxShadow: "0 2px 6px rgb(0 0 0 / 0.15)",
+        maxWidth: "600px",
+        width: "100%",
+        margin: "0 auto",
+        boxSizing: "border-box",
+      }}
+    >
+      <input
+        ref={inputRef}
+        type="text"
+        className="form-control"
         style={{
-          maxWidth: "100%",
-          backgroundColor: "#ffffff",
+          flexGrow: 1,
+          border: "none",
+          outline: "none",
+          fontSize: "1rem",
+          background: "transparent",
+          padding: "10px",
         }}
-      >
-        <input
-          type="text"
-          className="form-control border-0 shadow-none flex-grow-1"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSend();
+          }
+        }}
+        placeholder="Type a message..."
+      />
+
+      {enableVoice && (
+        <button
+          onClick={handleVoiceInput}
+          className="btn text-white border-0 shadow d-flex align-items-center justify-content-center"
           style={{
-            backgroundColor: "transparent",
-            padding: "8px 0",
-            minWidth: 0,
-            fontSize: "1rem",
+            backgroundColor: isListening ? "#c82333" : "#0A2647",
+            borderRadius: "30px",
+            padding: "8px 20px",
+            transition: "background-color 0.3s ease",
+            cursor: "pointer",
           }}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Type a message..."
-        />
-
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          {enableVoice && (
-            <button
-              onClick={handleVoiceInput}
-              className="btn text-white border-0 shadow d-flex align-items-center justify-content-center"
-              style={{
-                backgroundColor: "#0A2647",
-                borderRadius: "30px",
-                padding: "6px 20px",
-                fontSize: "1rem",
-                transition: "background-color 0.3s ease",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#144272")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#0A2647")
-              }
-              title={isListening ? "Stop Listening" : "Start Voice Input"}
-            >
-              <i
-                className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}
-                style={{
-                  fontSize: "1.2rem",
-                  display: "block",
-                  lineHeight: 1,
-                }}
-              ></i>
-            </button>
-          )}
-
-          <button
-            className="btn text-white border-0 shadow"
+          title={isListening ? "Stop Listening" : "Start Voice Input"}
+        >
+          <i
+            className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}
             style={{
-              backgroundColor: "#0A2647",
-              borderRadius: "30px",
-              padding: "6px 20px",
-              transition: "background-color 0.3s ease",
+              fontSize: "1.2rem",
+              lineHeight: 1,
             }}
-            onClick={handleSend}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "#144272")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = "#0A2647")
-            }
-          >
-            Send
-          </button>
-        </div>
-      </div>
+          ></i>
+        </button>
+      )}
+
+      <button
+        className="btn text-white border-0 shadow"
+        style={{
+          backgroundColor: "#0A2647",
+          borderRadius: "30px",
+          padding: "8px 20px",
+          fontSize: "1rem",
+          cursor: "pointer",
+          transition: "background-color 0.3s ease",
+        }}
+        onClick={handleSend}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#144272")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#0A2647")}
+      >
+        Send
+      </button>
     </div>
   );
 }

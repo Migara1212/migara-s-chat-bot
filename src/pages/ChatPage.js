@@ -74,7 +74,7 @@ function ChatPage() {
         style={{
           flex: 1,
           borderRadius: "10px",
-          backgroundColor: "#e6f2f2",
+          backgroundColor: "transprerant",
           minHeight: 0,
         }}
       >

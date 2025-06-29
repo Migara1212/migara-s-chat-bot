@@ -86,16 +86,20 @@ function ChatInput({ onSend, enableVoice = false }) {
         <button
           onClick={handleVoiceInput}
           style={{
-            backgroundColor: isListening ? "#c82333" : "#0A2647",
+            backgroundColor: isListening ? "#0A2647" : "#0A2647",
             borderRadius: "30px",
             padding: "8px 20px",
             transition: "background-color 0.3s ease",
             cursor: "pointer",
+            animation: isListening
+              ? "glowPulse 2s infinite ease-in-out"
+              : "none",
             border: "none",
             color: "white",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            boxShadow: isListening ? "0 0 8px rgba(10, 38, 71, 0.7)" : "none",
           }}
           title={isListening ? "Stop Listening" : "Start Voice Input"}
         >

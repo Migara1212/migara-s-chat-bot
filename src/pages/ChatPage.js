@@ -1,4 +1,3 @@
-// ChatPage.js
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessage from "../components/ChatMessage";
 import ChatInput from "../components/ChatInput";
@@ -37,7 +36,7 @@ function ChatPage() {
     const handleFocus = () => {
       setTimeout(() => {
         scrollArea?.scrollTo({
-          top: scrollArea.scrollHeight,
+          top: 0,
           behavior: "smooth",
         });
       }, 300);
@@ -58,18 +57,20 @@ function ChatPage() {
       }}
     >
       <div style={{ flexShrink: 0 }}>
-        <button
-          className="btn btn-dark rounded-pill mb-2"
-          style={{ width: "fit-content" }}
-          onClick={() => navigate("/")}
-        >
-          Home
-        </button>
+        <div className="d-flex justify-content-between align-items-center mb-2 px-2">
+          <button
+            className="btn btn-dark rounded-pill"
+            style={{ width: "fit-content" }}
+            onClick={() => navigate("/")}
+          >
+            Home
+          </button>
+        </div>
       </div>
 
       <div
         ref={scrollRef}
-        className="overflow-auto px-2 py-3 hide-scrollbar"
+        className="overflow-auto px-2 py-3 hide-scrollbar d-flex flex-column-reverse"
         style={{
           flex: 1,
           borderRadius: "10px",
@@ -81,9 +82,12 @@ function ChatPage() {
           .hide-scrollbar::-webkit-scrollbar { display: none; }
           .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
         `}</style>
-        {messages.map((msg, idx) => (
-          <ChatMessage key={idx} message={msg} />
-        ))}
+        {messages
+          .slice()
+          .reverse()
+          .map((msg, idx) => (
+            <ChatMessage key={idx} message={msg} />
+          ))}
       </div>
 
       <div style={{ flexShrink: 0 }}>

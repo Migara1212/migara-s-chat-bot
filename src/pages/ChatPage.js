@@ -31,36 +31,40 @@ function ChatPage() {
 
   return (
     <div
-      className="container-fluid d-flex flex-column justify-content-between p-2"
-      style={{ minHeight: "100vh", backgroundColor: "#71C0BB" }}
+      className="d-flex flex-column justify-content-between"
+      style={{
+        height: "100vh",
+        backgroundColor: "#71C0BB",
+        padding: "10px",
+        boxSizing: "border-box",
+      }}
     >
-      {/* Home Button */}
+      {/* Home button */}
       <button
-        className="btn btn-dark rounded-pill mb-3"
+        className="btn btn-dark rounded-pill mb-2"
         style={{ width: "fit-content" }}
         onClick={() => navigate("/")}
       >
         Home
       </button>
 
-      {/* Chat Messages */}
+      {/* Messages area */}
       <div
         ref={scrollRef}
         className="flex-grow-1 overflow-auto px-2 py-3 hide-scrollbar"
-        style={{ borderRadius: "10px" }}
+        style={{ borderRadius: "10px", backgroundColor: "transparent" }}
       >
         <style>{`
           .hide-scrollbar::-webkit-scrollbar { display: none; }
           .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
         `}</style>
-
         {messages.map((msg, idx) => (
           <ChatMessage key={idx} message={msg} />
         ))}
       </div>
 
-      {/* Chat Input */}
-      <div className="pt-3">
+      {/* Chat input fixed at bottom */}
+      <div>
         <ChatInput onSend={handleSend} enableVoice={true} />
       </div>
     </div>

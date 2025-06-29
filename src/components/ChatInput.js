@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 function ChatInput({ onSend, enableVoice = false }) {
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null); // Store recognition instance
 
+  // Handle sending text
   const handleSend = () => {
     if (input.trim()) {
       onSend(input.trim());
@@ -11,23 +13,42 @@ function ChatInput({ onSend, enableVoice = false }) {
     }
   };
 
+  // Toggle voice input
   const handleVoiceInput = () => {
     if (!enableVoice) return;
 
-    const recognition = new (window.SpeechRecognition ||
-      window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-    recognition.start();
-    setIsListening(true);
+    // Initialize only once
+    if (!recognitionRef.current) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.lang = "en-US";
+      recognitionRef.current.continuous = false;
 
-    recognition.onresult = (event) => {
-      const voiceText = event.results[0][0].transcript;
-      setInput(voiceText);
+      // When voice is recognized
+      recognitionRef.current.onresult = (event) => {
+        const voiceText = event.results[0][0].transcript;
+        setInput(voiceText);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    // Toggle on/off
+    if (isListening) {
+      recognitionRef.current.stop();
       setIsListening(false);
-    };
-
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
   };
 
   return (
@@ -52,18 +73,27 @@ function ChatInput({ onSend, enableVoice = false }) {
           placeholder="Type a message..."
         />
 
+        {/* Voice Button Styled Like Send Button */}
         {enableVoice && (
           <button
-            className={`btn ${
-              isListening ? "btn-danger" : "btn-outline-secondary"
-            } border-0`}
+            className="btn text-white border-0 shadow d-flex align-items-center justify-content-center"
             onClick={handleVoiceInput}
-            style={{ borderRadius: "50%" }}
+            style={{
+              backgroundColor: "#0A2647",
+              borderRadius: "30px",
+              padding: "6px 20px",
+              transition: "background-color 0.3s ease",
+              fontSize: "1rem",
+            }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#144272")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#0A2647")}
+            title={isListening ? "Stop Listening" : "Start Voice Input"}
           >
-            {isListening ? "🎙️" : "🎤"}
+            <i className={`bi ${isListening ? "bi-mic-fill" : "bi-mic"}`}></i>
           </button>
         )}
 
+        {/* Send Button */}
         <button
           className="btn text-white border-0 shadow"
           style={{

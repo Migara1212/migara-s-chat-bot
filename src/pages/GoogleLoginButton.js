@@ -1,40 +1,25 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 function GoogleLoginButton() {
-  useEffect(() => {
-    function handleCredentialResponse(response) {
-      console.log("JWT Token:", response.credential);
-      // Send token to backend here
-    }
+  const handleLogin = () => {
+    // your Google login logic
+    alert("Google login clicked!");
+  };
 
-    function initializeGSI() {
-      window.google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-        callback: handleCredentialResponse,
-      });
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInDiv"),
-        { theme: "outline", size: "large", shape: "pill" }
-      );
-      // Do NOT call prompt()
-    }
-
-    if (window.google && window.google.accounts) {
-      initializeGSI();
-    } else {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGSI;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  return React.createElement("div", {
-    id: "googleSignInDiv",
-    style: { display: "flex", justifyContent: "center", marginTop: "20px" },
-  });
+  return (
+    <button
+      onClick={handleLogin}
+      className="btn btn-light d-flex align-items-center gap-2 rounded-pill px-4 py-2 shadow-sm"
+      style={{ fontWeight: "500" }}
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google"
+        style={{ width: "20px", height: "20px" }}
+      />
+      Sign in with Google
+    </button>
+  );
 }
 
 export default GoogleLoginButton;

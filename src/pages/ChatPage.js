@@ -23,14 +23,14 @@ function ChatPage() {
     }
   };
 
-  // Scroll to bottom when messages update
+  // Scroll to bottom on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Scroll input into view on focus (helps on mobile when keyboard opens)
+  // Scroll input into view when focused (mobile keyboard fix)
   useEffect(() => {
     const inputEl = document.querySelector("input[type='text']");
     if (!inputEl) return;
@@ -47,44 +47,48 @@ function ChatPage() {
 
   return (
     <div
-      className="d-flex flex-column justify-content-between"
+      className="d-flex flex-column"
       style={{
-        minHeight: "100vh", // Use minHeight instead of height
+        height: "100vh", // use full viewport height
         backgroundColor: "#71C0BB",
         padding: "10px",
         boxSizing: "border-box",
       }}
     >
-      {/* Home button */}
-      <button
-        className="btn btn-dark rounded-pill mb-2"
-        style={{ width: "fit-content" }}
-        onClick={() => navigate("/")}
-      >
-        Home
-      </button>
+      {/* Home button fixed on top */}
+      <div style={{ flexShrink: 0 }}>
+        <button
+          className="btn btn-dark rounded-pill mb-2"
+          style={{ width: "fit-content" }}
+          onClick={() => navigate("/")}
+        >
+          Home
+        </button>
+      </div>
 
-      {/* Messages area */}
+      {/* Messages container - fills remaining space */}
       <div
         ref={scrollRef}
-        className="flex-grow-1 overflow-auto px-2 py-3 hide-scrollbar"
+        className="overflow-auto px-2 py-3 hide-scrollbar"
         style={{
+          flexGrow: 1,
           borderRadius: "10px",
           backgroundColor: "#e6f2f2",
-          minHeight: 0, // Important for flexbox shrinking
+          minHeight: 0, // important for flexbox to shrink properly
         }}
       >
         <style>{`
           .hide-scrollbar::-webkit-scrollbar { display: none; }
           .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
         `}</style>
+
         {messages.map((msg, idx) => (
           <ChatMessage key={idx} message={msg} />
         ))}
       </div>
 
-      {/* Chat input fixed at bottom */}
-      <div>
+      {/* Input bar fixed at bottom */}
+      <div style={{ flexShrink: 0 }}>
         <ChatInput onSend={handleSend} enableVoice={true} />
       </div>
     </div>

@@ -45,7 +45,7 @@ function ChatInput({ onSend, enableVoice = false }) {
       <div
         className="d-flex flex-column flex-sm-row flex-grow-1 align-items-center gap-2 px-3 py-2 shadow rounded-pill"
         style={{
-          maxWidth: "600px",
+          maxWidth: "100%",
           backgroundColor: "#ffffff",
         }}
       >
@@ -56,6 +56,7 @@ function ChatInput({ onSend, enableVoice = false }) {
             backgroundColor: "transparent",
             padding: "8px 0",
             minWidth: 0,
+            fontSize: "1rem",
           }}
           value={input}
           onChange={(e) => setInput(e.target.value)}
